@@ -1,0 +1,30 @@
+# Visual Studio
+.vscode
+
+# Mac files
+.DS_Store
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Data Files
+*.csv
+*.tar
+*.pyc
+
+# Jupyter Notebook files
+notebooks/*
+*.ipynb
+
+# Env files
+.env
+
+# Secrets
+secrets/*
+!secrets/.gitkeep
+
+# Trash files notebooks
+.Trash-0/
+
+# pytest cache
+.pytest_caches

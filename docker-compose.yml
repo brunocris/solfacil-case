@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  airflow-scheduler:
+    build: .
+    restart: on-failure
+    volumes:
+      - .:${AIRFLOW_REPO_PATH}
+      - airflow-logs:${AIRFLOW_HOME}/logs
+    entrypoint: sh /docker-entry.sh
+    working_dir: ${AIRFLOW_REPO_PATH}
+    links:
+      - airflow-db
+    depends_on:
+      - airflow-db
+    env_file: .env
+    environment:
+      PYTHONWARNINGS: ignore:Unverified HTTPS request
+
+  airflow-webserver:
+    build: .
+    command: bash -c "echo \"AUTH_ROLE_PUBLIC='Admin'\" > $AIRFLOW_HOME/webserver_config.py && airflow webserver -p 8080"
+    restart: on-failure
+    depends_on:
+      - airflow-db
+      - airflow-scheduler
+    links:
+      - airflow-db
+    env_file: .env
+    volumes:
+      - .:${AIRFLOW_REPO_PATH}
+      - airflow-logs:${AIRFLOW_HOME}/logs
+    ports:
+      - 8080:8080
+
+  airflow-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    ports:
+      - 5432:5432
+
+volumes:
+  airflow-logs: 

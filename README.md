@@ -40,7 +40,7 @@ O desenho de arquitetura também está [disponível pelo draw.io nesse link](htt
 #### Data Ingestion: zona de aquisição dos dados no Data Lake.
 
 - **MWAA (Managed Workflows for Apache Airflow)**: 
-  Solução que executa o Apache Airflow de forma gerenciada. Esse serviço pode ser aplicado para execução de cargas de trabalho em lote (batch), extraindo e carregando dados em um bucket S3 de destino. O Airflow conta com uma série de conectores e pode ler uma diversidade de bancos de dados (relacionais e não relacionais), arquivos e outras fontes, aplicando pipelines de carga agendados.
+  Solução que executa o Apache Airflow de forma gerenciada. Esse serviço pode ser aplicado para execução de cargas de trabalho em lote (batch), extraindo e carregando dados em um bucket S3 de destino. O Airflow conta com uma série de conectores e pode ler uma diversidade de bancos de dados (relacionais e não relacionais), arquivos e outras fontes, aplicando pipelines de carga agendados. É importante ressaltar que, nas leituras de RDBMS, para evitar os _LOCKS_ em bases de dados transacionais, de produção, o Airflow deverá ler bancos de dados de réplicas, sendo essas réplicas somente leitura ou geradas por mecanismos de CDC. 
 
 - **Kinesis**: 
   Serviço destinado ao fluxo de dados em streaming. Ele foi incluído na arquitetura pensando em consumo de dados oriundos de filas e mensagerias como o Kafka, SQS, SNS, RabbitMQ ou outros sistemas modelo pub/sub de tópicos. O Kinesis também pode ser uma boa opção para ingerir dados vindo de fluxos real time de dispositivos IoT.

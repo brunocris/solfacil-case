@@ -101,3 +101,54 @@ O desenho de arquitetura também está [disponível pelo draw.io nesse link](htt
 
 * Acrescente algum tratamento para mascaramento deste dado entre uma camada e
 outra.
+
+### Solução Elaborada:
+
+Esse repositório contém os códigos de duas DAGs criadas como exemplo para trabalhar respectivamente na leitura dos dados brutos da API (raw) e transformação/limpeza dos dados (curated)
+
+- **dinsey_api_raw_dag**: executa a extração de dados da API publica através do endpoint `/character` e carrega todos os dados de personagens no S3 em arquivos JSON, exatamente como estão na fonnte de dados.
+
+- **disney_api_raw_dag**: executa a transformação e limpeza dos dados que já estão no bucket raw do S3, carregando-os para o bucket curated. Essa DAG organiza e particiona os dados por personagem,a lém de padronizar a taxonomia das colunas e criptografar o campo de nome dos personagens (`name`).
+
+#### Executando o projeto
+
+É possivel implantar esse projeto para testar a execução das DAGs. Para tal são necessários alguns pré-requisitos de configuração local:
+
+- Certifique-se que você possui o [`docker`](https://docs.docker.com/get-docker/) e o [`docker-compose`](https://docs.docker.com/compose/install/) instalados.
+- Você precisará de uma conta AWS para uso do nível gratuito dos serviços:
+  - IAM: para criação do par de chaves (Secret Key e Access Key);
+  - S3: para criação dos buckets ('raw' e 'curated') usados no projeto.
+
+Para fazer o deploy da solução, foi criado um arquivo `Makefile` que auxilia na implantação rápida usando de forma implícita comandos do docker e docker-compose.
+
+> [!WARNING]
+Antes de fazer o deploy é importante verificar se o aplicativo `make` está instalado. Para fazer a verificação execute o comando `$ make --version` no seu terminal. Caso o `make` não esteja instalado no seu ambiente local, você pode consultar como instalar o pacote Debian no [Linux pelo apt](https://www.geeksforgeeks.org/how-to-install-make-on-ubuntu/) ou no [MacOS com homebrew](https://formulae.brew.sh/formula/make)
+
+```sh
+  $ make airflow-deploy 
+```
+
+O ambiente de execução em container facilita a compatibilidade de pacotes e já engloba todos os recursos necessários para execução do Airflow em uma versão recente e razoavelmente leve. 
+
+_Se você não desejar utilizar o `Makefile`, é possível iniciar o airflow pelo comando do docker-composer:_ 
+
+```sh
+  $ docker-compose up
+```
+
+Ao concluir, você pode desfazer o ambiente por completo:
+
+```sh
+  S make airflow-kill
+```
+
+Ao iniciar o Airflow em seu ambiente local, você deverá logar com usuário e senha padrão:
+
+```
+User: Admin
+Pass: Admin
+```
+
+Será necessário configurar as credenciais de conexão com a AWS acessando o menu `Admin > Connections > aws_deafult`. Clique para editar a conexão e insira as chaves geradas através do IAM nos respectivos campos.
+
+Se for necessário, configure o campo "Extra" com a região correta onde os buckets foram criados, na sua conta, para esse projeto de teste.

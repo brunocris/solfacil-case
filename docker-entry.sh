@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # wait for airflow-db to be ready
 until airflow db init; do
     echo "airflow-db not ready, sleeping 10 secs ..."
@@ -22,6 +21,16 @@ airflow connections delete aws_default
 airflow connections add \
     --conn-uri $AIRFLOW_CONN_AWS_URI \
     aws_default 
+
+# slack
+airflow connections add \
+    --conn-uri $AIRFLOW_CONN_SLACK_URI \
+    slack
+
+# disney
+airflow connections add \
+    --conn-uri $AIRFLOW_CONN_DISNEY_URI \
+    disney_api
 
 ## Start scheduler
 airflow scheduler

@@ -34,7 +34,7 @@ services:
       - 8080:8080
 
   airflow-db:
-    image: postgres:latest
+    image: postgres:13
     restart: always
     environment:
       POSTGRES_USER: airflow

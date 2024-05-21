@@ -1,4 +1,4 @@
-import requests, time, pandas as pd
+import requests
 
 from airflow.providers.http.hooks.http import HttpHook
 from airflow.exceptions import AirflowException
@@ -12,7 +12,7 @@ class DisneyApiHook:
     
     # Deafult http method is defined because this API is GET only.
     def __init__(self, method = 'GET'):
-        self.hook = HttpHook(method = method, http_conn_id = 'slack_api')
+        self.hook = HttpHook(method = method, http_conn_id = 'disney_api')
         self.conn = self.hook.get_connection(self.hook.http_conn_id)
 
     def _request_data(self, endpoint, param = None):
@@ -35,6 +35,6 @@ class DisneyApiHook:
         else:
             return response.json()
         
-    def extract(self):
-        response = self._request_data('character')
-        print(response)
+    def get_characters(self):
+        characters = self._request_data('character')
+        return characters['data']
